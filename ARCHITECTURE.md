@@ -19,6 +19,9 @@ Estes componentes podem ser usados sem modificações:
 - Funções utilitárias (`format_phone`, `format_cpf`, `format_cnpj`)
 - Permissão customizada (`IsOwnerOrReadOnly`)
 
+**Filtros**
+- Suporte a filtros com `django-filter` para endpoints de listagem
+
 ### Autenticação JWT
 
 **Endpoints JWT**
@@ -48,6 +51,11 @@ Estes componentes podem ser usados sem modificações:
 
 **Makefile**
 - Comandos úteis para desenvolvimento e Docker
+- Inclui comandos de qualidade (`format`, `lint`, `check`)
+
+**Qualidade de código**
+- Configurações de `black`, `flake8`, `pytest` e `coverage`
+- Referência em `QUALITY.md`
 
 ### Testes
 
@@ -79,13 +87,27 @@ Arquivo: `.env`
 - `TIME_ZONE`: Timezone (padrão: `UTC`)
 - `REDIS_URL`: URL do Redis para cache (opcional)
 
-### 2. CORS
+### 2. Filtros (Opcional)
+
+Dependência: `django-filter`
+
+Para usar filtros em views, adicione `DjangoFilterBackend` e defina `filterset_fields`:
+
+```python
+from django_filters.rest_framework import DjangoFilterBackend
+
+class ExampleViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status", "created_at"]
+```
+
+### 3. CORS
 
 Arquivo: `config/settings.py`
 
 Em produção, configure `CORS_ALLOWED_ORIGINS` no `.env` com as origens permitidas.
 
-### 3. Models e Apps
+### 4. Models e Apps
 
 Pasta: `apps/`
 
@@ -98,7 +120,7 @@ mv meu_app apps/
 
 Atualize `config/settings.py` e `apps/meu_app/apps.py`.
 
-### 4. Customização do User (Opcional)
+### 5. Customização do User (Opcional)
 
 Se precisar de campos adicionais no User, crie um modelo customizado:
 
@@ -119,13 +141,13 @@ AUTH_USER_MODEL = 'accounts.User'
 
 **Nota:** Faça isso antes de executar as primeiras migrações.
 
-### 5. Validators (Opcional)
+### 6. Validators (Opcional)
 
 Arquivo: `apps/core/validators.py`
 
-Os validators de CPF/CNPJ são básicos. Para validação completa, considere usar biblioteca externa ou implementar a validação completa dos dígitos verificadores.
+O validator de CPF implementa dígitos verificadores. O validator de CNPJ é básico; para validação completa, considere usar biblioteca externa.
 
-### 6. Docker (Opcional)
+### 7. Docker (Opcional)
 
 Arquivo: `Dockerfile`
 

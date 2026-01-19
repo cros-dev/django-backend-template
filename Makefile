@@ -1,4 +1,4 @@
-.PHONY: help install migrate makemigrations run shell test clean docker-up docker-down docker-build docker-logs superuser collectstatic
+.PHONY: help install migrate makemigrations run shell test clean docker-up docker-down docker-build docker-logs superuser collectstatic format lint check test-cov quality
 
 help:
 	@echo "Comandos disponíveis:"
@@ -8,9 +8,16 @@ help:
 	@echo "  make run              - Rodar servidor de desenvolvimento"
 	@echo "  make shell            - Abrir shell do Django"
 	@echo "  make test             - Executar testes"
+	@echo "  make test-cov         - Executar testes com coverage (pytest)"
 	@echo "  make superuser        - Criar superusuário"
 	@echo "  make collectstatic    - Coletar arquivos estáticos"
 	@echo "  make clean            - Limpar arquivos temporários"
+	@echo ""
+	@echo "Qualidade de código:"
+	@echo "  make format           - Formatar código com black"
+	@echo "  make lint             - Verificar código com flake8"
+	@echo "  make check            - Executar format + lint + test-cov"
+	@echo "  make quality          - Alias para check"
 	@echo ""
 	@echo "Docker:"
 	@echo "  make docker-up        - Iniciar containers"
@@ -36,6 +43,9 @@ shell:
 test:
 	python manage.py test
 
+test-cov:
+	pytest
+
 superuser:
 	python manage.py createsuperuser
 
@@ -50,6 +60,18 @@ clean:
 	rm -rf .pytest_cache
 	rm -rf htmlcov
 	rm -rf .coverage
+
+# Qualidade de código
+format:
+	black apps config manage.py
+
+lint:
+	flake8 apps config manage.py
+
+check: format lint test-cov
+	@echo "Verificação de qualidade concluída!"
+
+quality: check
 
 docker-up:
 	docker-compose up -d

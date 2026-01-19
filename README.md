@@ -44,12 +44,18 @@ apps/
 
 - [TEMPLATE.md](./TEMPLATE.md) - Como usar como template
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitetura e adaptações necessárias
+- [QUALITY.md](./QUALITY.md) - Ferramentas de qualidade de código
+- [docs/README.md](./docs/README.md) - Estrutura de documentação base
 
 ## Scripts
 
 - `python manage.py runserver` - Desenvolvimento
 - `python manage.py migrate` - Executar migrações
 - `python manage.py test` - Testes
+- `make test-cov` - Testes com coverage (pytest)
+- `make format` - Formatar código com black
+- `make lint` - Verificar código com flake8
+- `make check` - Formatar + lint + test-cov
 - `make help` - Ver comandos do Makefile
 
 ## Tecnologias
@@ -58,6 +64,7 @@ apps/
 - Django REST Framework 3.16.1
 - djangorestframework-simplejwt 5.5.1
 - django-cors-headers 4.3.1
+- django-filter 24.2
 - PostgreSQL (produção)
 - SQLite (desenvolvimento)
 

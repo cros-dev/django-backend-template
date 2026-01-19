@@ -74,9 +74,12 @@ Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes das adaptações necess�
 - Apps base (`apps.accounts`, `apps.core`)
 - Autenticação JWT configurada
 - Validators, utils e permissions genéricos
+- Filtros via `django-filter` (opcional)
 - Testes organizados em `tests/`
 - Docker configurado
 - Makefile com comandos úteis
+- Ferramentas de qualidade de código (veja `QUALITY.md`)
+- Docs base (`docs/README.md`, `docs/CONTRIBUTING.md`)
 
 ## Próximos Passos
 

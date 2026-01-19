@@ -3,6 +3,7 @@ Configurações base do Django.
 
 Template genérico para APIs REST com Django + DRF + JWT.
 """
+
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -17,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================================================
 try:
     from dotenv import load_dotenv
+
     load_dotenv(BASE_DIR / ".env")
 except Exception:
     pass
@@ -29,7 +31,7 @@ if not SECRET_KEY:
     raise ValueError(
         "SECRET_KEY não configurada. Defina no arquivo .env\n"
         "Para gerar uma chave segura, execute:\n"
-        "python -c \"from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())\""
+        'python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"'
     )
 
 DEBUG = os.getenv("DEBUG", "False").lower() in ("1", "true", "yes")
@@ -49,13 +51,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # Terceiros
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-
+    "django_filters",
     # Apps locais
     "apps.core",
     "apps.accounts",
@@ -105,13 +106,13 @@ else:
     postgres_db = os.getenv("POSTGRES_DB")
     postgres_user = os.getenv("POSTGRES_USER")
     postgres_password = os.getenv("POSTGRES_PASSWORD")
-    
+
     if not all([postgres_db, postgres_user, postgres_password]):
         raise ValueError(
             "Em produção (DEBUG=False), as variáveis POSTGRES_DB, "
             "POSTGRES_USER e POSTGRES_PASSWORD são obrigatórias."
         )
-    
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -127,7 +128,9 @@ else:
 # PASSWORD VALIDATORS
 # =========================================================
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -168,12 +171,8 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
-    "DEFAULT_RENDERER_CLASSES": (
-        "rest_framework.renderers.JSONRenderer",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
 }
@@ -182,12 +181,8 @@ REST_FRAMEWORK = {
 # JWT
 # =========================================================
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=int(os.getenv("JWT_ACCESS_MINUTES", 5))
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=int(os.getenv("JWT_REFRESH_DAYS", 1))
-    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("JWT_ACCESS_MINUTES", 5))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("JWT_REFRESH_DAYS", 1))),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -230,9 +225,7 @@ LOGGING = {
 # =========================================================
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 
-CORS_ALLOWED_ORIGINS = os.getenv(
-    "CORS_ALLOWED_ORIGINS", ""
-).split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 
 CORS_ALLOW_CREDENTIALS = True
 
