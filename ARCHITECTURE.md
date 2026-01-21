@@ -63,6 +63,12 @@ Estes componentes podem ser usados sem modificações:
 - Testes básicos para serializers, views e autenticação
 - Testes para validators, utils e permissions
 
+### Documentação
+
+- Estrutura consolidada em [`docs/README.md`](./docs/README.md)
+- Guia de contribuição em [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md)
+- ADRs em [`docs/decisions/index.md`](./docs/decisions/index.md)
+
 ## Precisa Adaptar
 
 ### 1. Variáveis de Ambiente

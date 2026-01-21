@@ -4,6 +4,10 @@ Este documento define padrões mínimos para contribuir com projetos criados a p
 
 **Para detalhes técnicos das ferramentas de qualidade, veja [`../QUALITY.md`](../QUALITY.md).**
 
+## Documentação
+
+- Estrutura e padrões gerais estão em [`README.md`](./README.md).
+
 ## Padrão de Commits
 
 Seguimos o padrão **Conventional Commits**.
@@ -96,4 +100,4 @@ Antes de abrir um PR:
 ---
 
 **Status:** Padrões mínimos de contribuição  
-**Última atualização:** 2026-01-19
+**Última atualização:** 2026-01-21

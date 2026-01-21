@@ -45,7 +45,14 @@ apps/
 - [TEMPLATE.md](./TEMPLATE.md) - Como usar como template
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitetura e adaptações necessárias
 - [QUALITY.md](./QUALITY.md) - Ferramentas de qualidade de código
+- [CHANGELOG.md](./CHANGELOG.md) - Histórico de mudanças do template
 - [docs/README.md](./docs/README.md) - Estrutura de documentação base
+- [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) - Guia de contribuição
+- [docs/system/api-spec.md](./docs/system/api-spec.md) - Especificação da API (base)
+- [docs/system/data-model.md](./docs/system/data-model.md) - Modelo de dados (base)
+- [docs/system/business-rules.md](./docs/system/business-rules.md) - Regras de negócio (base)
+- [docs/system/postman-guide.md](./docs/system/postman-guide.md) - Padrão Postman
+- [docs/decisions/index.md](./docs/decisions/index.md) - Registro de decisões (ADR)
 
 ## Scripts
 

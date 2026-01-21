@@ -79,7 +79,7 @@ Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes das adaptações necess�
 - Docker configurado
 - Makefile com comandos úteis
 - Ferramentas de qualidade de código (veja `QUALITY.md`)
-- Docs base (`docs/README.md`, `docs/CONTRIBUTING.md`)
+- Docs base (`docs/README.md`, `docs/CONTRIBUTING.md`, `docs/system/api-spec.md`, `docs/system/data-model.md`, `docs/system/business-rules.md`, `docs/system/postman-guide.md`, `docs/decisions/index.md`)
 
 ## Próximos Passos
 
