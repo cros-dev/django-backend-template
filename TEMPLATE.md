@@ -80,6 +80,7 @@ Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes das adaptações necess�
 - Makefile com comandos úteis
 - Ferramentas de qualidade de código (veja `QUALITY.md`)
 - Docs base (`docs/README.md`, `docs/CONTRIBUTING.md`, `docs/system/api-spec.md`, `docs/system/data-model.md`, `docs/system/business-rules.md`, `docs/system/postman-guide.md`, `docs/decisions/index.md`)
+- Estrutura de backlog: `backlog.md` (standalone) ou `backlog-shared.md` + `backlog-{plataforma}.md` (monorepo)
 
 ## Próximos Passos
 
@@ -88,6 +89,52 @@ Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes das adaptações necess�
 3. Crie um superusuário
 4. Adicione seus apps específicos em `apps/`
 5. Configure CORS para suas origens
+
+## Estrutura de Documentação
+
+### Projeto Standalone (Padrão)
+
+Por padrão, o template mantém `docs/` dentro do diretório do backend. Isso é ideal para projetos que contêm apenas o backend Django.
+
+```
+seu-projeto/
+├── backend/
+│   ├── apps/
+│   ├── config/
+│   ├── docs/          # Documentação do backend
+│   ├── README.md
+│   └── ...
+```
+
+### Monorepo (Múltiplas Plataformas)
+
+Se você estiver criando um monorepo com múltiplas plataformas (backend, frontend, mobile, etc.), é recomendado mover `docs/` para a raiz do projeto para documentação compartilhada:
+
+```
+seu-monorepo/
+├── backend/           # Backend Django
+├── frontend/          # Frontend React/Vue/etc
+├── mobile/           # App Mobile
+└── docs/             # Documentação compartilhada (movido daqui)
+    ├── product/
+    ├── system/
+    ├── governance/
+    └── ...
+```
+
+**Ao mover `docs/` para a raiz, atualize os links relativos nos seguintes arquivos:**
+- `README.md`: Links para `docs/` (de `./docs/` para `../docs/`)
+- `ARCHITECTURE.md`: Links para `docs/` (de `./docs/` para `../docs/`)
+- `TEMPLATE.md`: Links para `docs/` (de `./docs/` para `../docs/`)
+
+**Exemplo de atualização:**
+```markdown
+# Antes (docs dentro do backend)
+- [docs/README.md](./docs/README.md)
+
+# Depois (docs na raiz do monorepo)
+- [docs/README.md](../docs/README.md)
+```
 
 ## Notas
 

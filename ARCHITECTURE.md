@@ -37,21 +37,29 @@ Estes componentes podem ser usados sem modificações:
 ### Configurações
 
 **settings.py**
-- Separação dev/prod (SQLite vs PostgreSQL)
+- Carrega automaticamente o arquivo **`.env`**. Em ambientes Docker, as variáveis injetadas pelo Compose têm prioridade.
+- **Banco de Dados**: Prioriza PostgreSQL se as variáveis estiverem definidas; caso contrário, usa SQLite em modo DEBUG.
+- **Segurança**: HTTPS forçado em produção via `SECURE_SSL_REDIRECT` (configurável via env var).
+- **Cache**: Usa Redis dinamicamente se `REDIS_URL` estiver definido, senão LocMemCache.
+- **WhiteNoise**: Middleware configurado para servir arquivos estáticos em produção.
 - CORS configurado (permissivo em dev, restritivo em prod)
-- Segurança em produção (SSL, HSTS, cookies seguros)
-- Cache com fallback LocMemCache (Redis opcional)
 - Logging configurado
 - I18N configurável
 
+**Ambientes**
+- **Execução Nativa**: Uso de **`.env`** (SQLite/Cache Local) via `python manage.py runserver`.
+- **Execução Docker Local**: Uso de **`.env.local`** (Postgres/Redis) via `docker-compose.local.yml`.
+- **Deploy (Homol/Prod)**: Uso de **`.env`** (Postgres Externo/Nginx) via `docker-compose.yml`.
+
 **Docker**
-- `Dockerfile` configurado
-- `docker-compose.yml` com PostgreSQL e Redis
-- `docker-entrypoint.sh` para inicialização automática
+- `Dockerfile` configurado com Gunicorn
+- `docker-compose.yml` para produção e homologação (PostgreSQL externo, Redis incluído, bind mounts customizáveis para static/media)
+- `docker-compose.local.yml` para desenvolvimento local (PostgreSQL e Redis incluídos)
+- `docker-entrypoint.sh` com timeout, migrate, collectstatic e criação de superusuário
 
 **Makefile**
 - Comandos úteis para desenvolvimento e Docker
-- Inclui comandos de qualidade (`format`, `lint`, `check`)
+- Comandos separados para desenvolvimento local (`-local`) e produção
 
 **Qualidade de código**
 - Configurações de `black`, `flake8`, `pytest` e `coverage`
@@ -73,25 +81,32 @@ Estes componentes podem ser usados sem modificações:
 
 ### 1. Variáveis de Ambiente
 
-Arquivo: `.env`
+Arquivos: **`.env`** (produção ou nativo) ou **`.env.local`** (Docker local)
 
 **Obrigatórias:**
 - `SECRET_KEY`: Gere uma chave segura
 - `DEBUG`: `true` ou `false`
 - `ALLOWED_HOSTS`: Hosts permitidos
 
-**Produção (quando DEBUG=false):**
+**PostgreSQL (obrigatórias quando variáveis estiverem definidas):**
 - `POSTGRES_DB`: Nome do banco
 - `POSTGRES_USER`: Usuário do PostgreSQL
 - `POSTGRES_PASSWORD`: Senha do PostgreSQL
+- `POSTGRES_HOST`: Host do PostgreSQL (`db` no Docker local, host/IP externo em produção)
+- `POSTGRES_PORT`: Porta do PostgreSQL (padrão: `5432`)
 
 **Opcionais:**
+- `SECURE_SSL_REDIRECT`: Força HTTPS (padrão: `True` em produção)
 - `JWT_ACCESS_MINUTES`: Tempo de vida do access token (padrão: 5)
 - `JWT_REFRESH_DAYS`: Tempo de vida do refresh token (padrão: 1)
 - `CORS_ALLOWED_ORIGINS`: Origens permitidas para CORS
 - `LANGUAGE_CODE`: Código do idioma (padrão: `pt-br`)
 - `TIME_ZONE`: Timezone (padrão: `UTC`)
-- `REDIS_URL`: URL do Redis para cache (opcional)
+- `REDIS_URL`: URL do Redis (`redis://redis:6379/1` no Docker, `redis://127.0.0.1:6379/1` fora)
+- `GUNICORN_WORKERS`: Número de workers do Gunicorn (padrão: `2`)
+- `STATIC_ROOT_HOST`: Caminho absoluto no host para arquivos estáticos (produção)
+- `MEDIA_ROOT_HOST`: Caminho absoluto no host para arquivos de mídia (produção)
+- `DJANGO_SUPERUSER_*`: Variáveis para criação automática de superusuário (apenas desenvolvimento)
 
 ### 2. Filtros (Opcional)
 
@@ -153,26 +168,17 @@ Arquivo: `apps/core/validators.py`
 
 O validator de CPF implementa dígitos verificadores. O validator de CNPJ é básico; para validação completa, considere usar biblioteca externa.
 
-### 7. Docker (Opcional)
-
-Arquivo: `Dockerfile`
-
-Em produção, substitua `runserver` por um servidor WSGI (ex: Gunicorn):
-
-```dockerfile
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
-```
-
 ## Checklist de Adaptação
 
 - [ ] Configurar `SECRET_KEY` no `.env`
 - [ ] Configurar `DEBUG` e `ALLOWED_HOSTS`
 - [ ] Configurar PostgreSQL (se produção)
 - [ ] Configurar `CORS_ALLOWED_ORIGINS` (se produção)
+- [ ] Configurar caminhos de volume (`STATIC_ROOT_HOST`, `MEDIA_ROOT_HOST`) para produção
+- [ ] Configurar Redis para cache em produção (opcional)
 - [ ] (Opcional) Customizar modelo User
 - [ ] Criar apps específicos do projeto
 - [ ] (Opcional) Ajustar validators se necessário
-- [ ] (Opcional) Configurar Redis para cache
 - [ ] Renomear projeto se necessário
 
 ## Estrutura de Apps
@@ -198,4 +204,5 @@ apps/
 - **Migrations**: São ignoradas no Git (exceto `__init__.py`) para manter o template genérico
 - **Autenticação**: Por padrão, todas as views requerem autenticação JWT
 - **Paginação**: Padrão de 20 itens por página
-- **Cache**: LocMemCache por padrão, Redis opcional
+- **Cache**: LocMemCache por padrão, Redis dinâmico se `REDIS_URL` estiver definido
+- **Docker**: Use `docker-compose.local.yml` para ambiente local e `docker-compose.yml` para deploy (Homol/Prod)

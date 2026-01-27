@@ -8,7 +8,8 @@ Esta pasta contém documentação técnica base para projetos criados a partir d
 docs/
 ├── product/                # Visão e backlog (placeholders)
 │   ├── vision.md           # Visão geral do produto
-│   └── backlog.md          # Épicos e backlog (alto nível)
+│   ├── backlog.md          # Épicos e backlog (alto nível) - para projetos standalone
+│   └── backlog-shared.md    # Cards multi-plataforma - para monorepos
 ├── system/                 # Documentação técnica do sistema
 │   ├── api-spec.md         # Especificação de API (base)
 │   ├── data-model.md       # Modelo de dados (base)
@@ -23,6 +24,33 @@ docs/
 ├── CONTRIBUTING.md         # Guia de contribuição e commits
 └── README.md               # Este arquivo
 ```
+
+## Estrutura de Backlog
+
+### Projeto Standalone (Padrão)
+
+Para projetos com apenas backend, use `backlog.md`:
+
+```
+docs/product/
+├── vision.md
+└── backlog.md          # Todos os épicos e cards
+```
+
+### Monorepo (Múltiplas Plataformas)
+
+Para monorepos com múltiplas plataformas, separe os backlogs:
+
+```
+docs/product/
+├── vision.md
+├── backlog-shared.md    # Cards multi-plataforma
+├── backlog-backend.md   # Cards específicos do backend
+├── backlog-web.md       # Cards específicos do frontend
+└── backlog-mobile.md    # Cards específicos do mobile (se aplicável)
+```
+
+**Regra:** Cards que afetam múltiplas plataformas vão em `backlog-shared.md`. Cards específicos de uma plataforma vão em `backlog-{plataforma}.md`.
 
 ## Documentação por Plataforma
 

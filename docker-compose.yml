@@ -1,58 +1,20 @@
-version: '3.8'
-
 services:
   web:
     build: .
     container_name: django_backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-2}
     volumes:
-      - .:/app
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    ports:
-      - "8000:8000"
+      - ${STATIC_ROOT_HOST}:/app/staticfiles
+      - ${MEDIA_ROOT_HOST}:/app/media
+    expose:
+      - "8000"
     env_file:
       - .env
-    environment:
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-}
     depends_on:
-      - db
       - redis
     restart: unless-stopped
-
-  db:
-    image: postgres:15-alpine
-    container_name: django_postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-your_db_name}
-      POSTGRES_USER: ${POSTGRES_USER:-your_db_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-your_db_password}
-    ports:
-      - "5432:5432"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-your_db_user}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:7-alpine
     container_name: django_redis
-    ports:
-      - "6379:6379"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-  static_volume:
-  media_volume:

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -95,24 +96,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # =========================================================
 # DATABASE
 # =========================================================
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-else:
-    postgres_db = os.getenv("POSTGRES_DB")
-    postgres_user = os.getenv("POSTGRES_USER")
-    postgres_password = os.getenv("POSTGRES_PASSWORD")
+postgres_db = os.getenv("POSTGRES_DB")
+postgres_user = os.getenv("POSTGRES_USER")
+postgres_password = os.getenv("POSTGRES_PASSWORD")
 
-    if not all([postgres_db, postgres_user, postgres_password]):
-        raise ValueError(
-            "Em produção (DEBUG=False), as variáveis POSTGRES_DB, "
-            "POSTGRES_USER e POSTGRES_PASSWORD são obrigatórias."
-        )
-
+if postgres_db and postgres_user and postgres_password:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -121,6 +109,18 @@ else:
             "PASSWORD": postgres_password,
             "HOST": os.getenv("POSTGRES_HOST", "localhost"),
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        }
+    }
+elif not DEBUG:
+    raise ValueError(
+        "Em produção (DEBUG=False), as variáveis POSTGRES_DB, "
+        "POSTGRES_USER e POSTGRES_PASSWORD são obrigatórias."
+    )
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
@@ -149,6 +149,7 @@ USE_TZ = True
 # =========================================================
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -156,12 +157,17 @@ MEDIA_ROOT = BASE_DIR / "media"
 # SECURITY (PROD)
 # =========================================================
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    secure_ssl_redirect = os.getenv("SECURE_SSL_REDIRECT", "True").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    SECURE_SSL_REDIRECT = secure_ssl_redirect
+    SESSION_COOKIE_SECURE = secure_ssl_redirect
+    CSRF_COOKIE_SECURE = secure_ssl_redirect
+    SECURE_HSTS_SECONDS = 31536000 if secure_ssl_redirect else 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = secure_ssl_redirect
+    SECURE_HSTS_PRELOAD = secure_ssl_redirect
 
 # =========================================================
 # DJANGO REST FRAMEWORK
@@ -191,19 +197,21 @@ SIMPLE_JWT = {
 # =========================================================
 # CACHE
 # =========================================================
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "default-cache",
+redis_url = os.getenv("REDIS_URL", "").strip()
+if redis_url:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": redis_url,
+        }
     }
-}
-# Redis opcional para produção:
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1"),
-#     }
-# }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "default-cache",
+        }
+    }
 
 # =========================================================
 # LOGGING

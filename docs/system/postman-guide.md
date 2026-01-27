@@ -32,17 +32,19 @@ Use variáveis para tokens e URLs:
 
 ## Automação de Token (Script)
 
-Adicione o script abaixo na aba **Tests** da requisição `POST Login`:
+Adicione o seguinte script na aba **Tests** da requisição `POST Login` para capturar os tokens automaticamente:
 
 ```javascript
 const json = pm.response.json();
 
 if (json.access) {
     pm.collectionVariables.set("django_access_token", json.access);
+    console.log("Access token salvo");
 }
 
 if (json.refresh) {
     pm.collectionVariables.set("django_refresh_token", json.refresh);
+    console.log("Refresh token salvo");
 }
 ```
 
@@ -50,20 +52,23 @@ if (json.refresh) {
 
 ## Autenticação
 
-Todas as requisições (exceto Login) devem usar **Bearer Token**:
+Todas as requisições (exceto o Login) devem utilizar o tipo de autenticação **Bearer Token** na aba **Authorization**:
 
 - **Type**: `Bearer Token`
 - **Token**: `{{django_access_token}}`
+
+> **Dica**: Configure a autenticação no nível da pasta raiz (ou subpastas) e use a opção "Inherit auth from parent" em cada request individual.
 
 ---
 
 ## Observações Gerais
 
-- Use nomes descritivos em inglês para requests e pastas.
-- Salve exemplos de Success/Error para novos endpoints.
-- Garanta `Content-Type: application/json` em POST/PATCH/PUT.
+- **Nomenclatura**: Use nomes descritivos em inglês para requests e pastas.
+- **Exemplos**: Sempre que implementar um novo endpoint, salve um exemplo de "Success" e "Error" na Collection.
+- **Headers**: Certifique-se de que o `Content-Type: application/json` está configurado para requests de envio de dados (POST/PATCH/PUT).
+- **Sincronização**: Considere exportar o JSON da Collection para o repositório em `docs/postman/` para versionamento.
 
 ---
 
-**Status:** Guia base padronizado  
-**Última atualização:** 2026-01-21
+**Status:** Guia padronizado  
+**Última atualização:** 2026-01-26

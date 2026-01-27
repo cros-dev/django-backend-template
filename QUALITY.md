@@ -2,6 +2,8 @@
 
 Este documento descreve as ferramentas de qualidade de código configuradas no backend e como utilizá-las.
 
+**Para workflow de commits e padrões, veja [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).**
+
 ## Ferramentas Instaladas
 
 - **pytest** - Framework de testes
@@ -12,6 +14,8 @@ Este documento descreve as ferramentas de qualidade de código configuradas no b
 - **flake8** - Linter de código Python
 
 ## Uso Rápido
+
+**Nota:** Para workflow completo antes de commits, veja [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
 ### Comandos Makefile (Linux/Mac)
 
@@ -201,6 +205,8 @@ django-backend-template/
 ```
 
 ## Workflow Recomendado
+
+**Para workflow completo antes de commits, consulte [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md#-validação-de-commits).**
 
 ### Em CI/CD:
 

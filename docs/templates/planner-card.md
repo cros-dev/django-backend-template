@@ -1,36 +1,73 @@
-# Template de Card (Planner)
+# Template de Card do Microsoft Planner
 
-## Título
-
-[Área] Descrição curta e objetiva
-
-## Labels
-
-- `Backend` / `Docs` / `Infra`
-- `Feature` / `Bug` / `Refactor`
-- `Alta` / `Média` / `Baixa`
-
-## Status
-
-Planejado | Em andamento | Concluído
-
-## Bucket
-
-Backlog | Em andamento | Concluído
-
-## Descrição
-
+### Título do card:
 ```
+[Área] Descrição curta da tarefa
+```
+
+### Descrição:
+```
+Relacionado ao Épico: [Nome do Épico]
+
 Objetivo:
-Descreva o objetivo do card em uma frase.
+[Descreva o objetivo da tarefa]
+
+Critérios de aceite:
+- [Critério 1]
+- [Critério 2]
 ```
 
-## Checklist
+### Checklist:
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Revisão
 
-- [ ] Passo 1
-- [ ] Passo 2
-- [ ] Passo 3
+### Labels (TAGS):
+- `Área` (Backend, Docs, Infra)
+- `Tipo` (Feature, Bug, Refactor, Tech Debt)
+- `Prioridade` (Alta, Média, Baixa)
+- `Épico` (Ex: Épico: Base Técnica)
+
+### Observações
+- Registre o card no backlog do projeto (se aplicável).
+- Cards multi-plataforma podem ser organizados em backlogs separados.
 
 ---
 
-**Última atualização:** 2026-01-21
+### Exemplo de Card Completo
+
+**Título:** `[Backend] API de Autenticação JWT`
+
+**Descrição:**
+```
+Relacionado ao Épico: Autenticação e Autorização
+
+Objetivo:
+Implementar sistema de autenticação JWT para permitir acesso seguro à API.
+
+Critérios de aceite:
+- API REST completa permite login e refresh token
+- Validações: email válido, senha obrigatória
+- Autenticação JWT obrigatória para endpoints protegidos
+- Testes de integração passando
+```
+
+**Checklist:**
+- [ ] Criar serializer de autenticação
+- [ ] Criar ViewSet para login e refresh
+- [ ] Configurar URLs
+- [ ] Testes de integração
+- [ ] Revisão de código
+
+**Labels:**
+- `Backend`
+- `Feature`
+- `Alta`
+- `Épico: Autenticação e Autorização`
+
+**Bucket:** `Backlog` (ou `Em andamento`)
+
+---
+
+**Status:** Template ativo  
+**Última atualização:** 2026-01-26
